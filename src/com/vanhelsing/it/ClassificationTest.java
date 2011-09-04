@@ -39,30 +39,56 @@ public class ClassificationTest extends ProviderTestCase2<SpamContentProvider> {
 
 		Uri insertedFeature = getProvider().insert(ClassificationTable.URI, classificationGood());
 		getProvider().insert(ClassificationTable.URI, classificationBad());
-		
+
 		Log.i("vanhelsing", insertedFeature.toString());
 
 		final Cursor cursor = getProvider().query(ClassificationTable.URI, new String[] { ClassificationTable.DB_COL_NAME, ClassificationTable.DB_COL_DOCUMENT_COUNT },
 				String.format("%s = '%s'", ClassificationTable.DB_COL_NAME, Classification.BAD.toString()), null, null);
-	
+
 		cursor.moveToFirst();
 		assertEquals(1, cursor.getCount());
 		assertEquals(20, cursor.getInt(cursor.getColumnIndex(ClassificationTable.DB_COL_DOCUMENT_COUNT)));
 	}
-	
+
 	public void testSelectionOfGoodDocuments() throws Exception {
 		Uri insertedFeature = getProvider().insert(ClassificationTable.URI, classificationGood());
 		getProvider().insert(ClassificationTable.URI, classificationBad());
-		
+
 		Log.i("vanhelsing", insertedFeature.toString());
 
 		final Cursor cursor = getProvider().query(ClassificationTable.URI, new String[] { ClassificationTable.DB_COL_NAME, ClassificationTable.DB_COL_DOCUMENT_COUNT },
 				String.format("%s = '%s'", ClassificationTable.DB_COL_NAME, Classification.GOOD.toString()), null, null);
-	
+
 		cursor.moveToFirst();
 		assertEquals(1, cursor.getCount());
 		assertEquals(16, cursor.getInt(cursor.getColumnIndex(ClassificationTable.DB_COL_DOCUMENT_COUNT)));
+
+	}
+
+	public void testUpdationOfDocumentCounts() throws Exception {
+		Uri insertedFeature = getProvider().insert(ClassificationTable.URI, classificationGood());
+		getProvider().insert(ClassificationTable.URI, classificationBad());
+
+		final int rowsUpdated = getProvider().update(ClassificationTable.URI, updatedBadClassificationValues(),
+				String.format("%s='%s'", ClassificationTable.DB_COL_NAME, Classification.BAD.toString()), null);
+		assertEquals(1, rowsUpdated);
+
+		final Cursor cursor = getProvider().query(ClassificationTable.URI, new String[] { ClassificationTable.DB_COL_NAME, ClassificationTable.DB_COL_DOCUMENT_COUNT },
+				String.format("%s = '%s'", ClassificationTable.DB_COL_NAME, Classification.BAD.toString()), null, null);
 		
+		assertNotNull(cursor);
+		cursor.moveToFirst();
+		assertEquals(1, cursor.getCount());
+		
+		final int numberOfBadDocuments = cursor.getInt(cursor.getColumnIndex(ClassificationTable.DB_COL_DOCUMENT_COUNT));
+		assertEquals(27, numberOfBadDocuments);
+
+	}
+
+	private ContentValues updatedBadClassificationValues() {
+		final ContentValues contentValues = new ContentValues();
+		contentValues.put(ClassificationTable.DB_COL_DOCUMENT_COUNT, 27);
+		return contentValues;
 	}
 
 	private ContentValues classificationBad() {
