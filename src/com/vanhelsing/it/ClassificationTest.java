@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.test.ProviderTestCase2;
 import android.util.Log;
 
+import com.vanhelsing.Classification;
 import com.vanhelsing.contentProvider.ClassificationTable;
 import com.vanhelsing.contentProvider.SpamContentProvider;
 
@@ -21,7 +22,7 @@ public class ClassificationTest extends ProviderTestCase2<SpamContentProvider> {
 	}
 
 	public void testInsertClassification() throws Exception {
-		ContentValues contentValues = classificationData();
+		ContentValues contentValues = classificationGood();
 		Uri insertedFeature = getProvider().insert(ClassificationTable.URI, contentValues);
 		Log.i("vanhelsing", insertedFeature.toString());
 
@@ -29,15 +30,52 @@ public class ClassificationTest extends ProviderTestCase2<SpamContentProvider> {
 		cursor.moveToFirst();
 		String classification = cursor.getString(cursor.getColumnIndex(ClassificationTable.DB_COL_NAME));
 		int document_count = cursor.getInt(cursor.getColumnIndex(ClassificationTable.DB_COL_DOCUMENT_COUNT));
-		assertEquals("good", classification);
-		assertEquals(1, document_count);
+		assertEquals(Classification.GOOD.toString(), classification);
+		assertEquals(16, document_count);
 
 	}
 
-	private ContentValues classificationData() {
+	public void testSelectionOfBadClassification() throws Exception {
+
+		Uri insertedFeature = getProvider().insert(ClassificationTable.URI, classificationGood());
+		getProvider().insert(ClassificationTable.URI, classificationBad());
+		
+		Log.i("vanhelsing", insertedFeature.toString());
+
+		final Cursor cursor = getProvider().query(ClassificationTable.URI, new String[] { ClassificationTable.DB_COL_NAME, ClassificationTable.DB_COL_DOCUMENT_COUNT },
+				String.format("%s = '%s'", ClassificationTable.DB_COL_NAME, Classification.BAD.toString()), null, null);
+	
+		cursor.moveToFirst();
+		assertEquals(1, cursor.getCount());
+		assertEquals(20, cursor.getInt(cursor.getColumnIndex(ClassificationTable.DB_COL_DOCUMENT_COUNT)));
+	}
+	
+	public void testSelectionOfGoodDocuments() throws Exception {
+		Uri insertedFeature = getProvider().insert(ClassificationTable.URI, classificationGood());
+		getProvider().insert(ClassificationTable.URI, classificationBad());
+		
+		Log.i("vanhelsing", insertedFeature.toString());
+
+		final Cursor cursor = getProvider().query(ClassificationTable.URI, new String[] { ClassificationTable.DB_COL_NAME, ClassificationTable.DB_COL_DOCUMENT_COUNT },
+				String.format("%s = '%s'", ClassificationTable.DB_COL_NAME, Classification.GOOD.toString()), null, null);
+	
+		cursor.moveToFirst();
+		assertEquals(1, cursor.getCount());
+		assertEquals(16, cursor.getInt(cursor.getColumnIndex(ClassificationTable.DB_COL_DOCUMENT_COUNT)));
+		
+	}
+
+	private ContentValues classificationBad() {
+		final ContentValues contentValues = new ContentValues();
+		contentValues.put(ClassificationTable.DB_COL_NAME, Classification.BAD.toString());
+		contentValues.put(ClassificationTable.DB_COL_DOCUMENT_COUNT, 20);
+		return contentValues;
+	}
+
+	private ContentValues classificationGood() {
 		ContentValues contentValues = new ContentValues();
-		contentValues.put(ClassificationTable.DB_COL_NAME, "good");
-		contentValues.put(ClassificationTable.DB_COL_DOCUMENT_COUNT, 1);
+		contentValues.put(ClassificationTable.DB_COL_NAME, Classification.GOOD.toString());
+		contentValues.put(ClassificationTable.DB_COL_DOCUMENT_COUNT, 16);
 		return contentValues;
 	}
 
