@@ -10,9 +10,9 @@ import com.vanhelsing.Classification;
 import com.vanhelsing.contentProvider.ClassificationTable;
 import com.vanhelsing.contentProvider.SpamContentProvider;
 
-public class ClassificationTest extends ProviderTestCase2<SpamContentProvider> {
+public class ClassificationTableTest extends ProviderTestCase2<SpamContentProvider> {
 
-	public ClassificationTest() {
+	public ClassificationTableTest() {
 		super(SpamContentProvider.class, SpamContentProvider.AUTHORITY);
 	}
 
