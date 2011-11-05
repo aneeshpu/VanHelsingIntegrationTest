@@ -10,9 +10,9 @@ import com.vanhelsing.contentProvider.ClassificationTable;
 import com.vanhelsing.contentProvider.FeatureTable;
 import com.vanhelsing.contentProvider.SpamContentProvider;
 
-public class FeatureTest extends ProviderTestCase2 {
+public class FeatureTableTest extends ProviderTestCase2 {
 
-	public FeatureTest() {
+	public FeatureTableTest() {
 		super(SpamContentProvider.class, "com.vanhelsing.contentProvider");
 	}
 	

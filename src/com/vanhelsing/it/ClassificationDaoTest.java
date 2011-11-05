@@ -1,19 +1,34 @@
 package com.vanhelsing.it;
 
-import junit.framework.Assert;
 import android.test.AndroidTestCase;
 
 import com.vanhelsing.Classification;
 import com.vanhelsing.contentProvider.Category;
 import com.vanhelsing.contentProvider.ClassificationDao;
+import com.vanhelsing.contentProvider.IClassificationDao;
 
 public class ClassificationDaoTest extends AndroidTestCase {
 
 	public void testPersistsAClassificationWithTheDocumentCount() throws Exception {
-		final ClassificationDao classificationDao = new ClassificationDao(getContext());
-		Assert.assertTrue(classificationDao.persist(Classification.BAD, 12));
+		final IClassificationDao classificationDao = new ClassificationDao(getContext());
+		assertTrue(classificationDao.persist(Classification.BAD, 12));
 		
 		final Category bad = classificationDao.getBad();
 		assertEquals(12, bad.documentCount());
+		
+		final int noOfrowsDeleted = classificationDao.delete(bad);
+		System.out.println(noOfrowsDeleted);
+	}
+	
+	public void testGetsAClassificationFromDatabase() {
+		
+		final IClassificationDao classificationDao = new ClassificationDao(getContext());
+		classificationDao.persist(Classification.BAD, 23);
+		
+		final Category category = classificationDao.get(Classification.BAD);
+		assertNotNull(category);
+		assertEquals(23, category.documentCount());
+		
+		classificationDao.delete(category);
 	}
 }
