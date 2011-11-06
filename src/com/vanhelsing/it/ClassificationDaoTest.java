@@ -31,4 +31,16 @@ public class ClassificationDaoTest extends AndroidTestCase {
 		
 		classificationDao.delete(category);
 	}
+	
+	public void testPersistsACategory() throws Exception {
+		
+		final ClassificationDao classificationDao = new ClassificationDao(getContext());
+		final Category category = new Category(Classification.BAD, 24);
+		final Category persistedCategory = classificationDao.persist(category);
+		
+		assertNotNull(persistedCategory);
+		
+		//TODO: How do I not use the DAOs for this.
+		classificationDao.delete(persistedCategory);
+	}
 }
