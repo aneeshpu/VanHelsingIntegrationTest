@@ -11,7 +11,7 @@ public class ClassificationDaoTest extends AndroidTestCase {
 
 	public void testPersistsAClassificationWithTheDocumentCount() throws Exception {
 		final IClassificationDao classificationDao = new ClassificationDao(getContext());
-		assertTrue(classificationDao.persist(Classification.BAD, 12));
+		assertNotNull(classificationDao.persist(new Category(Classification.BAD, 12)));
 		
 		final Category bad = classificationDao.getBad();
 		assertEquals(12, bad.documentCount());
@@ -23,7 +23,7 @@ public class ClassificationDaoTest extends AndroidTestCase {
 	public void testGetsAClassificationFromDatabase() {
 		
 		final IClassificationDao classificationDao = new ClassificationDao(getContext());
-		classificationDao.persist(Classification.BAD, 23);
+		classificationDao.persist(new Category(Classification.BAD, 23));
 		
 		final Category category = classificationDao.get(Classification.BAD);
 		assertNotNull(category);

@@ -9,10 +9,11 @@ public class FeatureDaoTest extends AndroidTestCase{
 
 	public void testPersistsAFeature() throws Exception {
 		
-		final FeatureDao featureDao = new FeatureDao(getContext(), null);
-		Assert.assertTrue(featureDao.persist(new Word("lottery", null)));
+		final FeatureDao featureDao = new FeatureDao(null, getContext());
+		final Word feature = new Word("lottery", null);
+		Assert.assertTrue(featureDao.persist(feature));
 		
-		final Feature feature = featureDao.get("lottery");
-		Assert.assertEquals(new Word("lottery", null), feature);
+		final Feature persistedFeature = featureDao.get(feature);
+		Assert.assertEquals(feature, persistedFeature);
 	}
 }
