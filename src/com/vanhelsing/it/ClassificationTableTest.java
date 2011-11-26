@@ -23,8 +23,8 @@ public class ClassificationTableTest extends ProviderTestCase2<SpamContentProvid
 
 	public void testInsertClassification() throws Exception {
 		ContentValues contentValues = classificationGood();
-		Uri insertedFeature = getProvider().insert(ClassificationTable.URI, contentValues);
-		Log.i("vanhelsing", insertedFeature.toString());
+		Uri insertedClassification = getProvider().insert(ClassificationTable.URI, contentValues);
+		Log.i("vanhelsing", insertedClassification.toString());
 
 		Cursor cursor = getProvider().query(ClassificationTable.URI, new String[] { ClassificationTable.DB_COL_NAME, ClassificationTable.DB_COL_DOCUMENT_COUNT }, null, null, null);
 		cursor.moveToFirst();
